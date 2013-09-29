@@ -1,0 +1,82 @@
+<html>
+<head>
+	<title>Save links app</title>
+	<link rel="stylesheet" type="text/css" href="http://getbootstrap.com/dist/css/bootstrap.css">
+	<style type="text/css">
+		.date-link{
+			display: block;
+			margin-top: 5px;
+			font-size: 0.8em;
+			color: rgb(182, 180, 180);
+		}
+
+		.votes-links{
+			margin-top: 8px;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="container" id="wrapper">
+
+	    <h1>Save links</h1>
+
+	    <div class="row">
+
+	        <div class="col-md-8">
+	        	<div id="container-links">
+	        		<ul class="list-group" id="wrap-links"></ul>
+	        	</div>
+				<form action="" method="">
+
+				</form>  
+	        </div>
+	   
+	        <div class="col-md-4">
+	           <form class="form-horizontal" role="form" id="form-add">
+	           		<h4 class="alert alert-danger" style="display:none"><b>Ingresa una url<b></h4>
+				  
+				  	<div class="form-group">
+				    	<label for="inputEmail1" class="col-lg-2 control-label">Ingresa una url</label>
+				    	<div class="col-lg-10">
+				      		<input type="email" class="form-control" id="url-input" placeholder="Email">
+				    	</div>
+				  	</div>
+					<button class="btn btn-primary">Add</button>
+				</form>
+	        </div>
+
+	    </div>
+	</div>
+
+	<!-- TEMPLATES -->
+	<script type="text/template" id="links-tmpl">
+		<li class="list-group-item">
+			<a target="_blank" href="<%= url %>"><%= url %></a>
+			<span class="date-link">Send
+				<%= moment(created, "YYYY-MM-DDTHH:mm:ss Z").fromNow()  %>
+			</span>
+			<a href="" class="pull-right glyphicon glyphicon-remove remove-link <%= id %>" data-id="<%= id %>"></a>
+			
+			<div class="btn-group btn-group-sm votes-links">
+				<button type="button" class="btn btn-default">
+					<span class="glyphicon glyphicon-thumbs-down"></span></button>
+			  	<button type="button" class="btn btn-default">
+			  		<span class="glyphicon glyphicon-thumbs-up"></span>
+				</button>
+			</div>
+		</li>
+
+	</script>
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script type="text/javascript" src="http://underscorejs.org/underscore-min.js"></script>
+	
+	<script type="text/javascript" src="http://backbonejs.org/backbone-min.js"></script>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.2.1/moment.min.js"></script>
+
+	<script src="/js/main.js"></script>
+
+
+</body>
+</html>
