@@ -1,0 +1,32 @@
+.date-link{
+	display: block;
+	margin-top: 5px;
+	font-size: 0.8em;
+	color: rgb(182, 180, 180);
+}
+
+.votes-links{
+	margin-top: 8px;
+}
+
+.count-vote{
+	color: green;
+	/*margin-left: 5px;*/
+}
+
+.link-image{
+	float: left;
+	width: 120px;
+	height: 120px;
+	margin-right: 10px;
+}
+
+.single-link{
+	height: 140px;
+	margin-bottom: 5px;
+
+}
+
+#options-links{
+	margin-bottom: 15px;
+}

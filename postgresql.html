@@ -1,0 +1,70 @@
+var pg = require('pg');
+/*
+  , connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/dailyjs'
+  , client
+  , query;
+
+client = new pg.Client(connectionString);
+client.connect();
+query = client.query('CREATE TABLE visits (date date)');
+query.on('end', function() { client.end(); });
+
+app.get('/database', function(req, res) {
+  var date = new Date();
+
+  client.query('INSERT INTO visits(date) VALUES($1)', [date]);
+
+  query = client.query('SELECT COUNT(date) AS count FROM visits WHERE date = $1', [date]);
+  query.on('row', function(result) {
+    console.log(result);
+
+    if (!result) {
+      return res.send('No data found');
+    } else {
+      res.send('Visits today: ' + result.count);
+    }
+  });
+});
+*/
+/*
+var pg = require('pg');
+
+pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  client.query('CREATE TABLE visits (date date)', function(err, result) {
+    done();
+    if(err) return console.error(err);
+    console.log(result.rows);
+  });
+});*/
+
+
+// LOCAL TEST
+
+var pg = require("pg");
+
+var conString = "pg://postgres:1234@localhost:5432/users";
+
+var client = new pg.Client(conString);
+client.connect();
+
+app.get("/insert", function(req, res){
+	client.query("INSERT INTO users(firstname, lastname) VALUES($1, $2)," ["Ernesto", "ponce"], function(err, result){
+		res.send(result)
+	});
+
+});
+
+client.query("CREATE TABLE IF NOT EXISTS users(firstname varchar(64), lastname varchar(64))");
+// client.query("INSERT INTO emps(firstname, lastname) values($1, $2)", ['Ronald', 'McDonald']);
+// client.query("INSERT INTO emps(firstname, lastname) values($1, $2)", ['Mayor', 'McCheese']);
+
+/*var query = client.query("SELECT firstname, lastname FROM emps ORDER BY lastname, firstname");
+query.on("row", function (row, result) {
+    result.addRow(row);
+});
+query.on("end", function (result) {
+    console.log(JSON.stringify(result.rows, null, "    "));
+    client.end();
+});*/
+
+

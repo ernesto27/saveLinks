@@ -2,28 +2,28 @@
 <head>
 	<title>Save links app</title>
 	<link rel="stylesheet" type="text/css" href="http://getbootstrap.com/dist/css/bootstrap.css">
-	<style type="text/css">
-		.date-link{
-			display: block;
-			margin-top: 5px;
-			font-size: 0.8em;
-			color: rgb(182, 180, 180);
-		}
-
-		.votes-links{
-			margin-top: 8px;
-		}
-	</style>
+	<link rel="stylesheet" type="text/css" href="/css/styles.css">
 </head>
 <body>
 
 	<div class="container" id="wrapper">
 
-	    <h1>Save links</h1>
+	    <h1>Save links1</h1>
 
 	    <div class="row">
 
 	        <div class="col-md-8">
+	        	<div class="btn-group btn-group-sm" id="options-links">
+					<a href="#latest" type="button" class="btn btn-primary">Ultimas</a>
+				  	<a href="#popular" type="button" class="btn btn-primary">Mas votadas</a>
+				</div>
+
+				<div class="btn-group btn-group-sm" id="options-links">
+					<a href="/login" type="button" class="btn btn-success">Ingresar con twitter</a>
+				  	
+				</div>
+				<br>
+
 	        	<div id="container-links">
 	        		<ul class="list-group" id="wrap-links"></ul>
 	        	</div>
@@ -34,7 +34,7 @@
 	   
 	        <div class="col-md-4">
 	           <form class="form-horizontal" role="form" id="form-add">
-	           		<h4 class="alert alert-danger" style="display:none"><b>Ingresa una url<b></h4>
+	           		<h4 class="alert alert-danger" style="display:none"><b>Ingresa una url</b></h4>
 				  
 				  	<div class="form-group">
 				    	<label for="inputEmail1" class="col-lg-2 control-label">Ingresa una url</label>
@@ -51,19 +51,22 @@
 
 	<!-- TEMPLATES -->
 	<script type="text/template" id="links-tmpl">
-		<li class="list-group-item">
-			<a target="_blank" href="<%= url %>"><%= url %></a>
+		<li class="list-group-item single-link">
+			<img class="link-image" src='<%= image %>'>	
+			<a target="_blank" href="<%= url %>"><%= title.substr(0,65) + "..." %></a>
 			<span class="date-link">Send
 				<%= moment(created, "YYYY-MM-DDTHH:mm:ss Z").fromNow()  %>
+				<%= created %>
 			</span>
 			<a href="" class="pull-right glyphicon glyphicon-remove remove-link <%= id %>" data-id="<%= id %>"></a>
 			
-			<div class="btn-group btn-group-sm votes-links">
-				<button type="button" class="btn btn-default">
-					<span class="glyphicon glyphicon-thumbs-down"></span></button>
-			  	<button type="button" class="btn btn-default">
-			  		<span class="glyphicon glyphicon-thumbs-up"></span>
+			<div class="btn-group btn-group-sm">
+				<button type="button" class="btn btn-default vote-up">
+					<a class="glyphicon glyphicon-thumbs-up"></a>
 				</button>
+			  	<button type="button" class="btn btn-default" >
+			  		<a class="glyphicon count-vote"><%= votes %></a>
+			  	</button>
 			</div>
 		</li>
 
@@ -76,6 +79,10 @@
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.2.1/moment.min.js"></script>
 
 	<script src="/js/main.js"></script>
+
+
+   
+
 
 
 </body>

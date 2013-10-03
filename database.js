@@ -1,52 +1,9 @@
+var pg = require('pg');
+var conString = process.env.DATABASE_URL || "pg://postgres:1234@localhost:5432/users";
+var client = new pg.Client(conString);
+client.connect();
 
-var mysql = require("mysql")
+client.query("CREATE TABLE IF NOT EXISTS links(id serial, url varchar(255), title varchar(255),created  date not null default CURRENT_DATE , votes int, image varchar(255))");
 
-
-// CHECK APPFOG MYSQL DATA
-if(process.env.VCAP_SERVICES){
-	var env = JSON.parse(process.env.VCAP_SERVICES);
-	var creds = env['mysql-5.1'][0]['credentials'];
-	var host = creds.hostname; 
-	var user =  creds.username; 
-	var password =  creds.password;
-	var database = creds.name ;
-	var portDB =  creds.port;
-}else{
-	var host = "localhost"; 
-	var user =  "root"; 
-	var password =  "";
-	var database = "savelinks" ;
-	var portDB =  3306;
-}
-
-
-
-var client = mysql.createConnection({
-	host: host,
-	user:  user,
-	password: password,
-	database: database,
-	port: portDB
-});
-
-
-/*client.query(
-	' CREATE DATABASE IF NOT exists savelinks',function(err, results, fields){
-		if(err){
-			client.end();
-			throw err;
-		}		
-	}
-);*/
-
-//client.query('USE savelinks')
-client.query(
-	'CREATE TABLE IF NOT EXISTS links  ' +
-	'(id INT(11) AUTO_INCREMENT, ' +
-	' url VARCHAR(255), ' +
-	' created TIMESTAMP DEFAULT CURRENT_TIMESTAMP(), ' +
-	' PRIMARY KEY(id)) CHARSET=utf8'
-
-);
 
 exports.client = client;

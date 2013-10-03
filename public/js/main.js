@@ -1,4 +1,10 @@
-var LinkModel = Backbone.Model.extend({
+var APP = {
+	Models : {},
+	Collections: {},
+	Views:{}
+};
+
+APP.Models.Link = Backbone.Model.extend({
 	urlRoot: "links",
 	defaults:{
 		title: '',
@@ -21,14 +27,21 @@ var LinkModel = Backbone.Model.extend({
 });
 
 
-var LinkView = Backbone.View.extend({
+APP.Views.Link = Backbone.View.extend({
 	//el: $("#wrap-links"),
 	//el: "li",
 	//className: "list-group-item",
 	template: _.template($("#links-tmpl").html()),
 	events:{
-		"click .remove-link": "removeLink"
+		"click .remove-link": "removeLink",
+		"click .vote-up": "voteUp",
+		"click .vote-down": "voteDown"
 	},
+
+	initialize: function(){
+		this.model.on("change:votes", this.update,this);
+	},
+	
 
 	render: function(){
 		var li = this.$el.html(this.template(this.model.toJSON()));
@@ -47,16 +60,30 @@ var LinkView = Backbone.View.extend({
 				that.$el.remove();
 			}
 		});
+	},
+
+	update: function(){
+		this.$el.find(".count-vote").text(this.model.get("votes"))
+	},
+
+	voteUp: function(e){
+		e.preventDefault();
+		var newCount = parseInt(this.model.get("votes")) + 1;
+		this.model.set("votes", newCount);
+		this.model.save();
+
+	},
+
+	voteDown: function(){
+		//this.model.set("votes", -100)
 	}
 
 });
 
-
-var LinksView = Backbone.View.extend({
-
+APP.Views.Links = Backbone.View.extend({
 	render: function(){
 		this.collection.each(function(link){
-			var l = new LinkView({model: link});
+			var l = new APP.Views.Link({model: link});
 			l.render();
 		});
 	}
@@ -64,10 +91,34 @@ var LinksView = Backbone.View.extend({
 });
 
 
-var Links = Backbone.Collection.extend({
-	url: "links",
-	model: LinkModel
-	
+APP.Collections.Links = Backbone.Collection.extend({
+	//url: "links",
+	url: function(){
+		if(this._query){
+			return "/links?type=popular";
+		}else{
+			return "links";
+		}
+	},
+	model: APP.Models.Link,
+
+	getPopular: function(q){
+		//this._query = escape(q);
+		this._query = true;
+		return this.fetch();
+	},
+
+	all: function(){
+		this._query = false;
+		return this.fetch();
+	},
+
+	showLinks: function(){
+		$("#wrap-links").empty();
+		var linksView = new APP.Views.Links({collection: this});
+		linksView.render();
+		//console.log(this)
+	}
 });
 
 
@@ -75,31 +126,38 @@ var App = Backbone.View.extend({
 	el: $("#wrapper"),
 
 	initialize: function(){
+		new appRouter();
+		new APP.Views.optionsLinks();
 		this.url = $("#url-input");
 		this.buttonAdd = this.$el.find("button");
+
+		Backbone.history.bind("all", function (route, router) {
+		    console.log(window.location.hash);
+		});
+
 	},
 
 	events:{
 		"click #form-add button": "addLink",
-		"keyup #url-input": "enabledInput"
-
+		"keyup #url-input": "enabledInput",
+	
 	},
 
 	addLink: function(e){
 		e.preventDefault();
 		var that = this;
 		that.buttonAdd.attr("disabled","disabled");
-		link = new LinkModel({url:this.url.val()});
+		link = new APP.Models.Link({url:this.url.val()});
 		
 		link.save({},{
 			success: function(model, res){
-				console.log(res);
-				console.log(link);
-				
-				view = new LinkView({model: new LinkModel(res[0])})
+
+				view = new APP.Views.Link({model: new APP.Models.Link(res)})
 				view.render();
 				links.add(link)
 				that.buttonAdd.removeAttr("disabled");
+				that.$el.find("#url-input").val("");
+				
 			},
 			error: function(model, err){
 				console.log("error")
@@ -108,10 +166,9 @@ var App = Backbone.View.extend({
 		});
 	},
 
-	removeLink: function(e){
-		e.preventDefault();
-		console.log(this.model)
 
+	voteLink: function(){
+		console.log("vote link")
 	},
 
 	enabledInput: function(){
@@ -119,9 +176,65 @@ var App = Backbone.View.extend({
 	}
 });
 
-links = new Links();
-links.fetch().then(function(){
-	var linksView = new LinksView({collection: links});
-	linksView.render();
+
+APP.Views.optionsLinks = Backbone.View.extend({
+	el: "#options-links",
+
+	events:{
+		"click":"showPopular"
+	},
+
+	showPopular: function(){
+		
+	}
+
 });
-var a = new App();
+
+
+var appRouter = Backbone.Router.extend({
+	wrapLinks: $("#container-links"),
+	routes:{
+		"": "index",
+		"latest" : "showLatest",
+		"popular": "showPopular"
+	},
+
+	index: function(){
+
+		Backbone.history.navigate("#latest", {trigger:true});
+	},
+
+	showLatest: function(){
+		var that = this;
+		this.wrapLinks.css("opacity", "0.4");
+		links = new APP.Collections.Links;
+		links.all().then(function(){
+			links.showLinks();
+			that.wrapLinks.css("opacity", "1");
+
+		});
+	},
+
+	showPopular: function(){
+		var that = this;
+		this.wrapLinks.css("opacity", "0.4");
+		var links = new APP.Collections.Links();
+		links.getPopular().then(function(){
+			links.showLinks();
+			that.wrapLinks.css("opacity", "1");
+		
+		});
+	}
+});
+
+
+
+links = new APP.Collections.Links;
+/*
+links.all().then(function(){
+	links.showLinks();
+});*/
+new App();
+Backbone.history.start();
+
+

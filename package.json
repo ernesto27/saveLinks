@@ -1,12 +1,16 @@
- {
- "name":"questionsapp",
-  "version":"0.0.1",
-  "dependencies":{
-      "express":"",
-      "nodemon" : "*",
-      "ejs": "*",
-      "jade": "*",
-      "mysql": "*",
-      "moment": "*"
+{
+  "name": "node-example",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "3.1.x",
+    "jade": "*",
+    "pg": "2.x",
+    "cheerio": "",
+    "request": ""
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.2.x"
+
   }
 }
